@@ -1,4 +1,4 @@
-//linked list by inserting node at LHS
+ //linked list by inserting node at LHS(based on FIFO)
 
 #include<stdio.h>
 #include<stdlib.h>
