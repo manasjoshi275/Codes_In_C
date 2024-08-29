@@ -1,3 +1,5 @@
+//CREATION OF LINKED LIST FROM RHS(FIFO BASED ON QUEUE)
+
 #include<stdio.h>
 #include<stdlib.h>
 typedef struct linkedlist{
