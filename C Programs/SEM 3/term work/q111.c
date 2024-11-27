@@ -7,6 +7,49 @@ typedef struct Edge {
     struct Edge *next;
 } Edge;
 
+void initUnionFind(int [],int);
+int find(int[],int);
+void unionSet(int[],int,int);
+void addEdge(Edge**,int,int,int);
+void displayEdges(Edge*);
+void kruskal(int,Edge*);
+
+
+int main() {
+    Edge *edges = NULL;
+    int vertices, choice, u, v, weight;
+    printf("Enter the number of vertices: ");
+    scanf("%d", &vertices);
+    if (vertices <= 0 || vertices > MAX) {
+        printf("Invalid number of vertices.\n");
+        return 1;
+    }
+    while (1) {
+        printf("\nMenu:\n1. Add Edge\n2. Display Edges\n3. Kruskal's Algorithm\n4. Exit\nEnter your choice: ");
+        scanf("%d", &choice);
+        switch (choice) {
+            case 1:
+                printf("Enter edge (u v weight): ");
+                scanf("%d %d %d", &u, &v, &weight);
+                if (u < vertices && v < vertices && u >= 0 && v >= 0) addEdge(&edges, u, v, weight);
+                else printf("Invalid edge.\n");
+                break;
+            case 2:
+                displayEdges(edges);
+                break;
+            case 3:
+                kruskal(vertices, edges);
+                break;
+            case 4:
+                printf("Exiting...\n");
+                exit(0);
+            default:
+                printf("Invalid choice. Try again.\n");
+        }
+    }
+    return 0;
+}
+
 void initUnionFind(int parent[], int vertices) {
     for (int i = 0; i < vertices; i++) parent[i] = i;
 }
@@ -62,41 +105,3 @@ void kruskal(int vertices, Edge *head) {
     printf("\nTotal weight of MST: %d\n", mstWeight);
 }
 
-int main() {
-    Edge *edges = NULL;
-    int vertices, choice, u, v, weight;
-
-    printf("Enter the number of vertices: ");
-    scanf("%d", &vertices);
-
-    if (vertices <= 0 || vertices > MAX) {
-        printf("Invalid number of vertices.\n");
-        return 1;
-    }
-
-    while (1) {
-        printf("\nMenu:\n1. Add Edge\n2. Display Edges\n3. Kruskal's Algorithm\n4. Exit\nEnter your choice: ");
-        scanf("%d", &choice);
-
-        switch (choice) {
-            case 1:
-                printf("Enter edge (u v weight): ");
-                scanf("%d %d %d", &u, &v, &weight);
-                if (u < vertices && v < vertices && u >= 0 && v >= 0) addEdge(&edges, u, v, weight);
-                else printf("Invalid edge.\n");
-                break;
-            case 2:
-                displayEdges(edges);
-                break;
-            case 3:
-                kruskal(vertices, edges);
-                break;
-            case 4:
-                printf("Exiting...\n");
-                exit(0);
-            default:
-                printf("Invalid choice. Try again.\n");
-        }
-    }
-    return 0;
-}
