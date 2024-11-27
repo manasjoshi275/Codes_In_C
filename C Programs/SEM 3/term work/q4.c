@@ -2,27 +2,25 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
-// Define the node structure
-typedef struct node {
+// Define the slstructure
+typedef struct sl{
     int data;
-    struct node *next;
-} node;
+    struct sl*next;
+} sl;
 
-node *createlink(node *);
-void display(node *);
-void multiply(node *); 
+sl*createlist(sl*);
+void display(sl*);
+void multiply(sl*); 
 
 int main() {
-    node *head = NULL;
+    sl*head = NULL;
     int ch;
     do {
-        printf("\n\nInput the choice:\n1-Create a link\n2-Display\n3-Find if any pair matches the target value\n0-Exit\n");
+        printf("\n\nInput the choice:\n1-Create a list\n2-Display\n3-Find if any pair matches the target value\n0-Exit\n");
         scanf("%d", &ch);
-
         switch (ch) {
             case 1:
-                head = createlink(head);
+                head = createlist(head);
                 break;
             case 2:
                 display(head);
@@ -33,8 +31,6 @@ int main() {
             case 0:
                 printf("\nExiting...");
                 break;
-            default:
-                printf("\nInvalid choice. Try again.");
         }
     } while (ch != 0);
 
@@ -42,10 +38,10 @@ int main() {
 }
 
 // Function to create a linked list
-node*createlink(node*head){
-    node*ptr=NULL;
-    node*temp=head;
-    ptr=(node*)malloc(sizeof(node));
+sl*createlist(sl*head){
+    sl*ptr=NULL;
+    sl*temp=head;
+    ptr=(sl*)malloc(sizeof(sl));
     printf("\nEnter the node value: ");
     scanf("%d",&ptr->data);
     ptr->next=NULL;
@@ -61,47 +57,44 @@ node*createlink(node*head){
     return head;
 }
 
-// Function to display the linked list
-void display(node *head) {
-    if (head == NULL) {
-        printf("\nThe list is empty.");
-        return;
-    }
-
-    printf("\nLinked List: ");
-    while (head != NULL) {
-        printf("%d ", head->data);
-        head = head->next;
-    }
-    printf("\n");
-}
-
-// Function to find if any pair of elements has a product equal to the target value
-void multiply(node *head) {
+void multiply(sl* head) {
     if (head == NULL || head->next == NULL) {
         printf("\nNot enough elements in the list to calculate.");
         return;
     }
-
-    int target, flag = 0;
+    int target;
     printf("\nInput the target value: ");
     scanf("%d", &target);
-
-    // Outer loop to pick the first element
-    for (node *current = head; current != NULL; current = current->next) {
-        // Inner loop to pick the second element
-        for (node *temp = current->next; temp != NULL; temp = temp->next) {
+    sl* current = head;
+    int f = 0;  // flag to check if the pair is found
+    while (current != NULL) {  // outer while loop
+        sl* temp = current->next;
+        while (temp != NULL) {  // inner while loop
             if (current->data * temp->data == target) {
                 printf("\nYes, the pair (%d, %d) gives the product %d.", current->data, temp->data, target);
-                flag = 1;
-                break;
+                f = 1;
+                break;  // Exit the inner loop once a pair is found
             }
+            temp = temp->next;
         }
-        if (flag == 1)
-            break;
+        if (f == 1) {
+            break;  // Exit the outer loop once a pair is found
+        }
+        current = current->next;  // Move to the next node in the outer loop
     }
-
-    if (flag == 0)
-        printf("\nNo pair of elements has a product equal to the target value.");
+    if (f == 0) {
+        printf("\nNo pair found that gives the product %d.", target);
+    }
 }
-
+// Function to display the linked list
+void display(sl*head) {
+    if (head == NULL) {
+        printf("\nThe list is empty.");
+        return;
+    }
+    printf("\nLinked List: ");
+    while (head != NULL) {
+        printf("\n%d", head->data);
+        head = head->next;
+    }
+}
