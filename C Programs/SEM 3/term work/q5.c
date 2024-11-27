@@ -10,39 +10,6 @@ typedef struct node {
     struct node *prev;
 } node;
 
-/* Function to create a doubly linked list
-node *createdoubly(node *head) {
-    node *newnode = NULL, *temp = NULL;
-    int ch = 0;
-
-    while (1) {
-        newnode = (node *)malloc(sizeof(node));
-        if (newnode == NULL) {
-            printf("\nMemory allocation failed.");
-            return head;
-        }
-
-        printf("\nInput the data of the node: ");
-        scanf("%d", &newnode->data);
-        newnode->next = NULL;
-        newnode->prev = NULL;
-
-        if (head == NULL) {
-            head = temp = newnode;
-        } else {
-            newnode->prev = temp;
-            temp->next = newnode;
-            temp = newnode;
-        }
-
-        printf("\nTo end, press 0. Otherwise, press any other number: ");
-        scanf("%d", &ch);
-        if (ch == 0)
-            break;
-    }
-
-    return head;
-}*/
 node*createdoubly(node*head){
     node*ptr=NULL;
     node*temp=head;
