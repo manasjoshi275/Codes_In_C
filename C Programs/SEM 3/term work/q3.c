@@ -3,118 +3,158 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Define the sl structure
-typedef struct sl {
+// Define the node structure for a singly linked list
+typedef struct node {
     int data;
-    struct sl *next;
-} sl;
+    struct node* next;
+} node;
 
-sl* createlist(sl*);
-void display(sl*);
-sl* delete_second_min(sl*);
+// Function declarations
+node* createList(node* head);
+void displayList(node* head);
+node* findSecondMin(node* head);
+node* deleteSecondMin(node* head, int secondMin);
 
 int main() {
-    sl* head = NULL;
-    int ch;
+    node* head = NULL;
+    int choice;
+
     do {
-        printf("\n\nInput the choices:\n1-Create a list\n2-Display the link\n3-Delete the second minimum\n0-Exit\n");
-        scanf("%d", &ch);
-        switch (ch) {
+        printf("\nMenu:\n");
+        printf("1. Create a list\n");
+        printf("2. Display the list\n");
+        printf("3. Find and delete the second minimum value\n");
+        printf("0. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
             case 1:
-                head = createlist(head);
+                head = createList(head);
                 break;
             case 2:
-                display(head);
+                displayList(head);
                 break;
             case 3:
-                head = delete_second_min(head);
+                {
+                    int secondMin = findSecondMin(head);
+                    if (secondMin != -1) {
+                        head = deleteSecondMin(head, secondMin);
+                    }
+                }
                 break;
             case 0:
-                return 0;
+                printf("\nExiting program...\n");
+                break;
+            default:
+                printf("Invalid choice. Please try again.\n");
         }
-    } while (ch != 0);
+    } while (choice != 0);
+
     return 0;
 }
 
 // Function to create a linked list
-sl* createlist(sl* head) {
-    sl* ptr = NULL;
-    sl* temp = head;
-    ptr = (sl*)malloc(sizeof(sl));
-    printf("\nEnter the value: ");
-    scanf("%d", &ptr->data);
-    ptr->next = NULL;
+node* createList(node* head) {
+    node* newNode, *temp;
+    int value;
+
+    newNode = (node*)malloc(sizeof(node));
+    printf("Enter value: ");
+    scanf("%d", &value);
+    newNode->data = value;
+    newNode->next = NULL;
+
     if (head == NULL) {
-        head = ptr;
+        head = newNode;
     } else {
+        temp = head;
         while (temp->next != NULL) {
             temp = temp->next;
         }
-        temp->next = ptr;
-    }
-    return head;
-}
-// Function to delete the node with the second minimum value
-sl* delete_second_min(sl* head) {
-    if (head == NULL || head->next == NULL) {
-        printf("\nNot enough elements to determine the second minimum.\n");
-        return head;
-    }
-    int min, second_min;
-    sl* current = head, *second_min_prev = NULL, *min_prev = NULL, *prev = NULL; // Initialize min and second_min
-    if (head->data < head->next->data) {
-        min = head->data;
-        second_min = head->next->data;
-    } else {
-        min = head->next->data;
-        second_min = head->data;
+        temp->next = newNode;
     }
 
-    current = head->next->next;
+    return head;
+}
+
+// Function to display the linked list
+void displayList(node* head) {
+    if (head == NULL) {
+        printf("The list is empty.\n");
+        return;
+    }
+
+    node* temp = head;
+    while (temp != NULL) {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+// Function to find the second minimum value in the list
+node* findSecondMin(node* head) {
+    if (head == NULL || head->next == NULL) {
+        printf("Not enough elements to determine the second minimum.\n");
+        return -1; // Indicating no second minimum exists
+    }
+
+    node *current = head, *prev = NULL;
+    int min = head->data, secondMin = -1;
+
     while (current != NULL) {
         if (current->data < min) {
-            second_min = min;
-            second_min_prev = min_prev;
+            secondMin = min;
             min = current->data;
-            min_prev = prev;
-        } else if (current->data > min && current->data < second_min) {
-            second_min = current->data;
-            second_min_prev = prev;
+        } else if (current->data > min && (secondMin == -1 || current->data < secondMin)) {
+            secondMin = current->data;
         }
+        current = current->next;
+    }
+
+    if (secondMin == -1) {
+        printf("No second minimum value found.\n");
+    } else {
+        printf("Second minimum value is %d.\n", secondMin);
+    }
+    return secondMin;
+}
+
+// Function to delete the node with the second minimum value
+node* deleteSecondMin(node* head, int secondMin) {
+    if (head == NULL) {
+        printf("The list is empty.\n");
+        return head;
+    }
+
+    node *current = head, *prev = NULL;
+
+    // Check if the second minimum is at the head of the list
+    if (head->data == secondMin) {
+        node* temp = head;
+        head = head->next;
+        free(temp);
+        printf("The second minimum value %d has been deleted.\n", secondMin);
+        return head;
+    }
+
+    // Traverse the list to find and delete the second minimum
+    while (current != NULL && current->data != secondMin) {
         prev = current;
         current = current->next;
     }
 
-    if (min == second_min) {
-        printf("\nNo second minimum value found (all values may be equal).\n");
-        return head;
-    }
-    // Delete the node with the second minimum value
-    if (second_min_prev == NULL) { // The second minimum is the head
-        sl* to_delete = head;
-        head = head->next;
-        free(to_delete);
-    } else {
-        sl* to_delete = second_min_prev->next;
-        second_min_prev->next = to_delete->next;
-        free(to_delete);
+    // If secondMin is found, delete it
+    if (current != NULL) {
+        prev->next = current->next;
+        free(current);
+        printf("The second minimum value %d has been deleted.\n", secondMin);
     }
 
-    printf("\nThe second minimum value %d has been deleted.\n", second_min);
     return head;
 }
-// Function to display the linked list
-void display(sl* head) {
-    if (head == NULL) {
-        printf("\nThe list is empty.");
-        return;
-    }
-    while (head != NULL) {
-        printf("%d ", head->data);
-        head = head->next;
-    }
-    printf("\n");
-}
+
 
 
 
